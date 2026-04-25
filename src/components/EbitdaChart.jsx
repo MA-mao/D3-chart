@@ -33,7 +33,7 @@ export default function EbitdaChart() {
     const observer = new ResizeObserver(entries => {
       for (let entry of entries) {
         const w = entry.contentRect.width
-        setDimensions({ width: w, height: Math.max(300, w * 0.5) })
+        setDimensions({ width: w, height: Math.max(280, w * 0.55) })
       }
     })
     if (containerRef.current) observer.observe(containerRef.current)
@@ -45,7 +45,13 @@ export default function EbitdaChart() {
     svg.selectAll('*').remove()
 
     const { width, height } = dimensions
-    const margin = { top: 40, right: 60, bottom: 50, left: 20 }
+    const isMobile = width < 500
+    const margin = {
+      top: isMobile ? 30 : 40,
+      right: isMobile ? 45 : 60,
+      bottom: isMobile ? 40 : 50,
+      left: isMobile ? 8 : 20
+    }
     const innerW = width - margin.left - margin.right
     const innerH = height - margin.top - margin.bottom
 
@@ -75,18 +81,18 @@ export default function EbitdaChart() {
 
     // Past / Future labels
     g.append('text')
-      .attr('x', futureX - 10)
-      .attr('y', 16)
+      .attr('x', futureX - 6)
+      .attr('y', 14)
       .attr('text-anchor', 'end')
-      .attr('font-size', 11)
+      .attr('font-size', isMobile ? 9 : 11)
       .attr('fill', '#999')
       .text('Past')
 
     g.append('text')
-      .attr('x', futureX + 10)
-      .attr('y', 16)
+      .attr('x', futureX + 6)
+      .attr('y', 14)
       .attr('text-anchor', 'start')
-      .attr('font-size', 11)
+      .attr('font-size', isMobile ? 9 : 11)
       .attr('fill', '#4caf50')
       .text('Future')
 
@@ -100,146 +106,126 @@ export default function EbitdaChart() {
         .attr('stroke-width', 1)
     })
 
-    // Y axis right side
-    yTicks.forEach(tick => {
+    // Y axis right side — skip some on mobile
+    yTicks.filter(t => isMobile ? t % 100 === 0 : true).forEach(tick => {
       g.append('text')
-        .attr('x', innerW + 5)
+        .attr('x', innerW + 4)
         .attr('y', y(tick) + 4)
-        .attr('font-size', 10)
+        .attr('font-size', isMobile ? 8 : 10)
         .attr('fill', '#999')
         .text(`$${tick}B`)
     })
 
-    // Defs for rounded bars
-    const defs = svg.append('defs')
+    const bw = x.bandwidth()
+    const hoverRef = { line: null, rightLabel: null }
 
     // Bars
-    const barGroups = g.selectAll('.bar-group')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'bar-group')
-
-    barGroups.each(function (d) {
-      const grp = d3.select(this)
+    data.forEach((d, i) => {
       const bx = x(d.year)
-      const bw = x.bandwidth()
       const by = y(d.value)
       const bh = innerH - y(d.value)
       const isFuture = d.year >= FUTURE_START
       const color = isFuture ? '#2e7d32' : '#66bb6a'
-      const r = 4
+      const r = 3
 
-      // Rounded top bar path
-      grp.append('path')
-        .attr('d', `
-          M ${bx},${by + r}
-          Q ${bx},${by} ${bx + r},${by}
-          L ${bx + bw - r},${by}
-          Q ${bx + bw},${by} ${bx + bw},${by + r}
-          L ${bx + bw},${by + bh}
-          L ${bx},${by + bh}
-          Z
-        `)
+      // Bar
+      g.append('path')
+        .attr('d', `M ${bx},${by + r} Q ${bx},${by} ${bx + r},${by} L ${bx + bw - r},${by} Q ${bx + bw},${by} ${bx + bw},${by + r} L ${bx + bw},${by + bh} L ${bx},${by + bh} Z`)
         .attr('fill', color)
         .attr('opacity', 0)
         .transition()
         .duration(600)
-        .delay((_, i) => i * 40)
+        .delay(i * 40)
         .attr('opacity', 1)
 
-      // Value label on top
-      grp.append('text')
-        .attr('x', bx + bw / 2)
-        .attr('y', by - 18)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', Math.max(8, Math.min(11, bw * 0.28)))
-        .attr('font-weight', '600')
-        .attr('fill', '#222')
-        .text(`$${d.value}B`)
+      // Labels — only show on mobile if bar is wide enough OR skip crowded ones
+      const showLabel = isMobile ? bw > 12 : true
+      const skipMobile = isMobile && i % 2 !== 0 && bw < 18
 
-      // YoY label
-      grp.append('text')
-        .attr('x', bx + bw / 2)
-        .attr('y', by - 6)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', Math.max(7, Math.min(10, bw * 0.25)))
-        .attr('fill', d.yoy < 0 ? '#e53935' : '#2e7d32')
-        .text(`${d.yoy > 0 ? '+' : ''}${d.yoy}%`)
-    })
+      if (showLabel && !skipMobile) {
+        const fontSize = isMobile ? Math.max(6, bw * 0.55) : Math.max(8, Math.min(11, bw * 0.28))
 
-    // X axis labels
-    g.selectAll('.x-label')
-      .data(data)
-      .enter()
-      .append('text')
-      .attr('class', 'x-label')
-      .attr('x', d => x(d.year) + x.bandwidth() / 2)
-      .attr('y', innerH + 20)
-      .attr('text-anchor', 'middle')
-      .attr('font-size', Math.max(8, Math.min(12, innerW / data.length * 0.6)))
-      .attr('fill', '#555')
-      .text(d => d.year)
-
-    // Hover overlay bars
-    const hoverRef = { line: null, rightLabel: null }
-
-    g.selectAll('.hover-bar')
-      .data(data)
-      .enter()
-      .append('rect')
-      .attr('class', 'hover-bar')
-      .attr('x', d => x(d.year))
-      .attr('y', 0)
-      .attr('width', x.bandwidth())
-      .attr('height', innerH)
-      .attr('fill', 'transparent')
-      .style('cursor', 'pointer')
-      .on('mouseover', function (event, d) {
-        const bx = x(d.year)
-        const bw = x.bandwidth()
-        const yVal = y(d.value)
-
-        // Dashed line
-        if (hoverRef.line) hoverRef.line.remove()
-        hoverRef.line = g.append('line')
-          .attr('x1', 0).attr('x2', innerW)
-          .attr('y1', yVal).attr('y2', yVal)
-          .attr('stroke', '#333')
-          .attr('stroke-width', 1)
-          .attr('stroke-dasharray', '4,3')
-
-        // Right floating label
-        if (hoverRef.rightLabel) hoverRef.rightLabel.remove()
-        const rlG = g.append('g')
-        hoverRef.rightLabel = rlG
-        rlG.append('rect')
-          .attr('x', innerW + 2)
-          .attr('y', yVal - 10)
-          .attr('width', 52)
-          .attr('height', 18)
-          .attr('fill', '#2e7d32')
-          .attr('rx', 3)
-        rlG.append('text')
-          .attr('x', innerW + 28)
-          .attr('y', yVal + 3)
+        g.append('text')
+          .attr('x', bx + bw / 2)
+          .attr('y', by - (isMobile ? 12 : 18))
           .attr('text-anchor', 'middle')
-          .attr('font-size', 10)
-          .attr('fill', '#fff')
+          .attr('font-size', fontSize)
+          .attr('font-weight', '600')
+          .attr('fill', '#222')
           .text(`$${d.value}B`)
 
-        setTooltip({
-          x: bx + bw / 2,
-          y: yVal,
-          d,
-          margin
+        g.append('text')
+          .attr('x', bx + bw / 2)
+          .attr('y', by - (isMobile ? 3 : 6))
+          .attr('text-anchor', 'middle')
+          .attr('font-size', fontSize * 0.9)
+          .attr('fill', d.yoy < 0 ? '#e53935' : '#2e7d32')
+          .text(`${d.yoy > 0 ? '+' : ''}${d.yoy}%`)
+      }
+    })
+
+    // X axis — rotate on mobile
+    data.forEach((d, i) => {
+      const label = g.append('text')
+        .attr('x', x(d.year) + bw / 2)
+        .attr('y', innerH + (isMobile ? 6 : 20))
+        .attr('text-anchor', isMobile ? 'end' : 'middle')
+        .attr('font-size', isMobile ? 8 : 11)
+        .attr('fill', '#555')
+        .text(d.year)
+
+      if (isMobile) {
+        label.attr('transform', `rotate(-45, ${x(d.year) + bw / 2}, ${innerH + 6})`)
+      }
+    })
+
+    // Hover overlay
+    data.forEach(d => {
+      const bx = x(d.year)
+      const yVal = y(d.value)
+
+      g.append('rect')
+        .attr('x', bx)
+        .attr('y', 0)
+        .attr('width', bw)
+        .attr('height', innerH)
+        .attr('fill', 'transparent')
+        .style('cursor', 'pointer')
+        .on('mouseover touchstart', function (event) {
+          if (hoverRef.line) hoverRef.line.remove()
+          hoverRef.line = g.append('line')
+            .attr('x1', 0).attr('x2', innerW)
+            .attr('y1', yVal).attr('y2', yVal)
+            .attr('stroke', '#333')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '4,3')
+
+          if (hoverRef.rightLabel) hoverRef.rightLabel.remove()
+          const rlG = g.append('g')
+          hoverRef.rightLabel = rlG
+          rlG.append('rect')
+            .attr('x', innerW + 2)
+            .attr('y', yVal - 10)
+            .attr('width', isMobile ? 40 : 52)
+            .attr('height', 18)
+            .attr('fill', '#2e7d32')
+            .attr('rx', 3)
+          rlG.append('text')
+            .attr('x', innerW + (isMobile ? 22 : 28))
+            .attr('y', yVal + 3)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', isMobile ? 8 : 10)
+            .attr('fill', '#fff')
+            .text(`$${d.value}B`)
+
+          setTooltip({ x: bx + bw / 2, y: yVal, d, margin })
         })
-      })
-      .on('mouseleave', function () {
-        if (hoverRef.line) { hoverRef.line.remove(); hoverRef.line = null }
-        if (hoverRef.rightLabel) { hoverRef.rightLabel.remove(); hoverRef.rightLabel = null }
-        setTooltip(null)
-      })
+        .on('mouseleave touchend', function () {
+          if (hoverRef.line) { hoverRef.line.remove(); hoverRef.line = null }
+          if (hoverRef.rightLabel) { hoverRef.rightLabel.remove(); hoverRef.rightLabel = null }
+          setTooltip(null)
+        })
+    })
 
   }, [dimensions])
 
@@ -256,10 +242,10 @@ export default function EbitdaChart() {
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {['Bars', 'Table', 'Range', 'Play', 'Settings'].map((btn, i) => (
             <button key={btn} style={{
-              padding: '5px 12px', borderRadius: 6, border: '1px solid #ddd',
+              padding: '5px 10px', borderRadius: 6, border: '1px solid #ddd',
               background: i === 0 ? '#2e7d32' : '#fff',
               color: i === 0 ? '#fff' : '#333',
-              fontSize: 12, cursor: 'pointer', fontWeight: 500
+              fontSize: 11, cursor: 'pointer', fontWeight: 500
             }}>{btn}</button>
           ))}
         </div>
@@ -268,7 +254,7 @@ export default function EbitdaChart() {
       {/* Stats Panel */}
       <div style={{
         display: 'inline-block', border: '1px solid #e0e0e0',
-        borderRadius: 8, padding: '10px 16px', marginBottom: 12, fontSize: 13
+        borderRadius: 8, padding: '10px 16px', marginBottom: 12, fontSize: 13, width: '100%', maxWidth: 360
       }}>
         {[
           { label: 'Annual EBITDA', value: '$172B', color: '#222' },
@@ -277,7 +263,7 @@ export default function EbitdaChart() {
           { label: 'Next 3 Years Avg', value: '+19.8%', color: '#2e7d32' },
           { label: 'Trend', value: 'Strong Growth', color: '#2e7d32' },
         ].map(row => (
-          <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 32, marginBottom: 4 }}>
+          <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 4 }}>
             <span style={{ color: '#555' }}>{row.label}</span>
             <span style={{ color: row.color, fontWeight: 600 }}>{row.value}</span>
           </div>
@@ -286,15 +272,13 @@ export default function EbitdaChart() {
 
       {/* Chart */}
       <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
-        <svg ref={svgRef} style={{ width: '100%', display: 'block' }} />
+        <svg ref={svgRef} style={{ width: '100%', display: 'block', overflowVisible: 'visible' }} />
 
-        {/* Tooltip */}
         {tooltip && (
           <div style={{
             position: 'absolute',
-            left: tooltip.x + tooltip.margin.left,
-            top: tooltip.y + tooltip.margin.top - 70,
-            transform: 'translateX(-50%)',
+            left: Math.min(tooltip.x + tooltip.margin.left, dimensions.width - 160),
+            top: Math.max(tooltip.y + tooltip.margin.top - 80, 0),
             background: '#fff',
             border: '1px solid #ddd',
             borderRadius: 8,
