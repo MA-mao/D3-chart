@@ -1,0 +1,198 @@
+export const FUTURE_START = 2026
+export const MAX_Y = 375
+
+export const chartData = [
+  { year: 2014, value: 34.1, yoy: 8 },
+  { year: 2015, value: 31.6, yoy: -7 },
+  { year: 2016, value: 27.5, yoy: -13 },
+  { year: 2017, value: 34.1, yoy: 24 },
+  { year: 2018, value: 46, yoy: 35 },
+  { year: 2019, value: 53.5, yoy: 16 },
+  { year: 2020, value: 69.9, yoy: 31 },
+  { year: 2021, value: 85.6, yoy: 22 },
+  { year: 2022, value: 100, yoy: 17 },
+  { year: 2023, value: 105, yoy: 5 },
+  { year: 2024, value: 133, yoy: 27 },
+  { year: 2025, value: 160, yoy: 20 },
+  { year: 2026, value: 172, yoy: 8 },
+  { year: 2027, value: 198, yoy: 15 },
+  { year: 2028, value: 231, yoy: 17 },
+  { year: 2029, value: 273, yoy: 18 },
+  { year: 2030, value: 337, yoy: 23 },
+]
+
+export const statsData = [
+  { label: 'Annual EBITDA', value: '$172B', color: '#111', icon: 'bar' },
+  { label: 'Last Year Growth', value: '+8%', color: '#16a34a', icon: 'arrow' },
+  { label: 'Last 3 Years Avg Growth', value: '+18%', color: '#16a34a', icon: 'wave' },
+  { label: 'Next 3 Years Avg', value: '+17%', color: '#16a34a', icon: 'star' },
+  { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+]
+
+export const allChartsData = [
+  {
+    id: 1,
+    title: 'Annual Revenue',
+    subtitle: 'Annual Revenue Projected To Reach $644B By 2030',
+    color: '#16a34a',
+    futureStart: 2026,
+    data: [
+      { year: 2022, value: 198, yoy: 8 },
+      { year: 2023, value: 212, yoy: 7 },
+      { year: 2024, value: 245, yoy: 16 },
+      { year: 2025, value: 282, yoy: 15 },
+      { year: 2026, value: 328, yoy: 16 },
+      { year: 2027, value: 378, yoy: 15 },
+      { year: 2028, value: 441, yoy: 17 },
+      { year: 2029, value: 522, yoy: 18 },
+      { year: 2030, value: 644, yoy: 23 },
+    ]
+  },
+  {
+    id: 2,
+    title: 'Annual EBITDA',
+    subtitle: 'Annual EBITDA Projected To Reach $337B By 2030',
+    color: '#16a34a',
+    futureStart: 2026,
+    data: [
+      { year: 2022, value: 100, yoy: 17 },
+      { year: 2023, value: 105, yoy: 5 },
+      { year: 2024, value: 133, yoy: 27 },
+      { year: 2025, value: 160, yoy: 20 },
+      { year: 2026, value: 172, yoy: 8 },
+      { year: 2027, value: 198, yoy: 15 },
+      { year: 2028, value: 231, yoy: 17 },
+      { year: 2029, value: 273, yoy: 18 },
+      { year: 2030, value: 337, yoy: 23 },
+    ]
+  },
+  {
+    id: 3,
+    title: 'Annual Earnings',
+    subtitle: 'Annual Earnings Projected To Reach $249B By 2030',
+    color: '#16a34a',
+    futureStart: 2026,
+    data: [
+      { year: 2022, value: 72, yoy: 10 },
+      { year: 2023, value: 75, yoy: 4 },
+      { year: 2024, value: 102, yoy: 36 },
+      { year: 2025, value: 121, yoy: 19 },
+      { year: 2026, value: 140, yoy: 16 },
+      { year: 2027, value: 170, yoy: 21 },
+      { year: 2028, value: 197, yoy: 16 },
+      { year: 2029, value: 220, yoy: 12 },
+      { year: 2030, value: 249, yoy: 13 },
+    ]
+  },
+  {
+    id: 4,
+    title: 'Annual EPS Diluted',
+    subtitle: 'Annual EPS Diluted Projected To Reach $33.4 By 2030',
+    color: '#16a34a',
+    futureStart: 2026,
+    data: [
+      { year: 2022, value: 11.9, yoy: 8 },
+      { year: 2023, value: 16.2, yoy: 36 },
+      { year: 2024, value: 19.3, yoy: 19 },
+      { year: 2025, value: 22.3, yoy: 16 },
+      { year: 2026, value: 25.9, yoy: 16 },
+      { year: 2027, value: 28.9, yoy: 12 },
+      { year: 2028, value: 30.2, yoy: 4 },
+      { year: 2029, value: 31.8, yoy: 5 },
+      { year: 2030, value: 33.4, yoy: 5 },
+    ]
+  },
+  {
+    id: 5,
+    title: 'Annual EPS Basic',
+    subtitle: 'Annual EPS Basic Projected To Reach $33.4 By 2030',
+    color: '#16a34a',
+    futureStart: 2026,
+    data: [
+      { year: 2022, value: 11.7, yoy: 7 },
+      { year: 2023, value: 16.1, yoy: 38 },
+      { year: 2024, value: 19.2, yoy: 19 },
+      { year: 2025, value: 22.1, yoy: 15 },
+      { year: 2026, value: 25.6, yoy: 16 },
+      { year: 2027, value: 28.6, yoy: 12 },
+      { year: 2028, value: 30.0, yoy: 5 },
+      { year: 2029, value: 31.7, yoy: 6 },
+      { year: 2030, value: 33.4, yoy: 5 },
+    ]
+  },
+  {
+    id: 6,
+    title: 'Quarterly Revenue',
+    subtitle: 'Quarterly Revenue Projected To Reach $88B By Jun 2027',
+    color: '#16a34a',
+    futureStart: 'Sep 2025',
+    isQuarterly: true,
+    data: [
+      { year: 'Mar 2022', value: 49.4, yoy: 8 },
+      { year: 'Jun 2022', value: 51.2, yoy: 5 },
+      { year: 'Sep 2022', value: 50.1, yoy: -2 },
+      { year: 'Dec 2022', value: 47.3, yoy: -6 },
+      { year: 'Mar 2023', value: 52.9, yoy: 7 },
+      { year: 'Jun 2023', value: 55.0, yoy: 7 },
+      { year: 'Sep 2023', value: 56.5, yoy: 13 },
+      { year: 'Dec 2023', value: 62.0, yoy: 31 },
+      { year: 'Mar 2024', value: 61.9, yoy: 17 },
+      { year: 'Jun 2024', value: 64.7, yoy: 18 },
+      { year: 'Sep 2024', value: 65.6, yoy: 16 },
+      { year: 'Dec 2024', value: 69.6, yoy: 12 },
+      { year: 'Mar 2025', value: 70.1, yoy: 13 },
+      { year: 'Jun 2025', value: 72.5, yoy: 12 },
+      { year: 'Sep 2025', value: 75.3, yoy: 15 },
+      { year: 'Dec 2025', value: 80.0, yoy: 15 },
+      { year: 'Mar 2026', value: 82.1, yoy: 17 },
+      { year: 'Jun 2026', value: 85.0, yoy: 17 },
+      { year: 'Sep 2026', value: 86.5, yoy: 15 },
+      { year: 'Dec 2026', value: 88.0, yoy: 10 },
+    ]
+  },
+]
+
+export const allStats = [
+  [
+    { label: 'Annual Revenue', value: '$282B', color: '#111', icon: 'bar' },
+    { label: 'Last Year Growth', value: '+15%', color: '#16a34a', icon: 'arrow' },
+    { label: 'Last 3 Years Avg Growth', value: '+13%', color: '#16a34a', icon: 'wave' },
+    { label: 'Next 3 Years Avg', value: '+16%', color: '#16a34a', icon: 'star' },
+    { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+  ],
+  [
+    { label: 'Annual EBITDA', value: '$160B', color: '#111', icon: 'bar' },
+    { label: 'Last Year Growth', value: '+20%', color: '#16a34a', icon: 'arrow' },
+    { label: 'Last 3 Years Avg Growth', value: '+18%', color: '#16a34a', icon: 'wave' },
+    { label: 'Next 3 Years Avg', value: '+14%', color: '#16a34a', icon: 'star' },
+    { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+  ],
+  [
+    { label: 'Annual Earnings', value: '$121B', color: '#111', icon: 'bar' },
+    { label: 'Last Year Growth', value: '+19%', color: '#16a34a', icon: 'arrow' },
+    { label: 'Last 3 Years Avg Growth', value: '+20%', color: '#16a34a', icon: 'wave' },
+    { label: 'Next 3 Years Avg', value: '+16%', color: '#16a34a', icon: 'star' },
+    { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+  ],
+  [
+    { label: 'Annual EPS Diluted', value: '$22.3', color: '#111', icon: 'bar' },
+    { label: 'Last Year Growth', value: '+16%', color: '#16a34a', icon: 'arrow' },
+    { label: 'Last 3 Years Avg Growth', value: '+24%', color: '#16a34a', icon: 'wave' },
+    { label: 'Next 3 Years Avg', value: '+10%', color: '#16a34a', icon: 'star' },
+    { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+  ],
+  [
+    { label: 'Annual EPS Basic', value: '$22.1', color: '#111', icon: 'bar' },
+    { label: 'Last Year Growth', value: '+15%', color: '#16a34a', icon: 'arrow' },
+    { label: 'Last 3 Years Avg Growth', value: '+23%', color: '#16a34a', icon: 'wave' },
+    { label: 'Next 3 Years Avg', value: '+11%', color: '#16a34a', icon: 'star' },
+    { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+  ],
+  [
+    { label: 'Quarterly Revenue', value: '$70.1B', color: '#111', icon: 'bar' },
+    { label: 'Last Quarter Growth', value: '+13%', color: '#16a34a', icon: 'arrow' },
+    { label: 'Last 3 Qtrs Avg Growth', value: '+14%', color: '#16a34a', icon: 'wave' },
+    { label: 'Next 3 Qtrs Avg', value: '+15%', color: '#16a34a', icon: 'star' },
+    { label: 'Trend', value: 'Strong Growth', color: '#16a34a', icon: 'warn' },
+  ],
+]
